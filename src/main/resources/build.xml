@@ -1,8 +1,0 @@
-<project name="Oxam" default="compile" basedir=".">
-<target name="compile">
-                    
-                    <copy file="src/main/resources/config.properties" todir="src/main/webapp/WEB-INF/">
-                    
-                    </copy>
-                </target>
-</project>
