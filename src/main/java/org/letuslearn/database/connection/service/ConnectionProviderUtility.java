@@ -17,8 +17,12 @@ import javax.sql.DataSource;
  * 
  */
 public class ConnectionProviderUtility {
-  private static ConnectionProviderUtility instance = new ConnectionProviderUtility();
+  private static ConnectionProviderUtility instance;
   private static ServletContext context = DalContextListener.getInstance().getServletContext();
+
+  private ConnectionProviderUtility() {
+
+  }
 
   public static ServletContext getContext() {
     return context;
@@ -29,15 +33,14 @@ public class ConnectionProviderUtility {
   }
 
   public static ConnectionProviderUtility getInstance() {
+    if (null == instance) {
+      instance = new ConnectionProviderUtility();
+    }
     return instance;
   }
 
-  public static void setInstance(ConnectionProviderUtility instance) {
-    ConnectionProviderUtility.instance = instance;
-  }
-
   public Connection getRdbmsConnection() {
-    System.out.println("In RDBMS");
+    // System.out.println("In RDBMS");
     Connection connection = null;
     DataSource ds;
 
@@ -50,11 +53,11 @@ public class ConnectionProviderUtility {
       // Iterator it = context.getEnvironment().keySet().iterator();
 
       ds = (DataSource) context.lookup("java:comp/env/jdbc/postgres");
-      System.out.println("DS " + ds);
+      // System.out.println("DS " + ds);
       connection = ds.getConnection();
     } catch (Exception e) {
     }
-    System.out.println(connection);
+    // System.out.println(connection);
 
     return connection;
   }
