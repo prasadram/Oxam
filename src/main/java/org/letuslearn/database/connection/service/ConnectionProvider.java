@@ -9,14 +9,17 @@ import java.sql.Connection;
  *
  */
 public class ConnectionProvider {
-  private static ConnectionProvider instance = new ConnectionProvider();
+  private ConnectionProvider() {
 
-  public static ConnectionProvider getInstance() {
-    return instance;
   }
 
-  public static void setInstance(ConnectionProvider instance) {
-    ConnectionProvider.instance = instance;
+  private static ConnectionProvider instance;
+
+  public static ConnectionProvider getInstance() {
+    if (null == instance) {
+      instance = new ConnectionProvider();
+    }
+    return instance;
   }
 
   public Connection getConnection() {
