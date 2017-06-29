@@ -3,6 +3,9 @@ package org.letuslearn.database.connection.service;
 
 import java.sql.Connection;
 
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 /**
  * 
  * @author aksharaaaa This class provided the Connection
@@ -23,8 +26,28 @@ public class ConnectionProvider {
   }
 
   public Connection getConnection() {
-    System.out.println("in Connection Provider");
+    // System.out.println("in Connection Provider");
+    Connection connection = null;
+    DataSource ds;
 
-    return ConnectionProviderUtility.getInstance().getRdbmsConnection();
+    try {
+      // InitializeParameters ip = InitializeParameters.getInstance();
+      // ConnectionParametersProvider cpp = ip.getCpp();
+
+      InitialContext context = new InitialContext(); // context.PROVIDER_URL // Context con = new
+      // System.out.println("out of 1");
+      // Iterator it = context.getEnvironment().keySet().iterator();
+      // This is by using JNDI
+      ds = (DataSource) context.lookup("java:comp/env/jdbc/postgres");
+
+      connection = ds.getConnection();
+
+    } catch (Exception e) {
+    }
+    // System.out.println(connection);
+
+    return connection;
+
+    // return ConnectionProviderUtility.getInstance().getRdbmsConnection();
   }
 }
