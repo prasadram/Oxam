@@ -1,9 +1,13 @@
 // Copyright (c) 2017-2018 LetUs Learn Inc.
 package org.letuslearn.database.utility;
 
-import java.sql.Connection;
+import org.letuslearn.database.connection.service.ConnectionProvider;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author aksharaaaa This class Validates the User login.
@@ -11,35 +15,38 @@ import java.sql.SQLException;
  * 
  */
 public class TableMetadataUtility {
-  private Connection connection;
+  private List<String> columnsList = new ArrayList<String>();
 
-  public TableMetadataUtility(Connection con) {
-    connection = con;
+  public List<String> getColumnsList() {
+    return columnsList;
   }
 
-  public String getColumns(String tableName) throws SQLException {
+  public TableMetadataUtility(ResultSet rscolumns) throws SQLException {
 
-    StringBuffer sb = new StringBuffer("(");
-    StringBuffer sbValues = new StringBuffer(" VALUES (");
-    System.out.println("In Conection " + connection);
-    java.sql.DatabaseMetaData metadata = connection.getMetaData();
-
-    ResultSet rscolumns = metadata.getColumns(connection.getCatalog(), null, tableName, null);
-    System.out.println(rscolumns.getRow());
     while (rscolumns.next()) {
 
-      // rscolumns.getString(i);
+      columnsList.add(rscolumns.getString("COLUMN_NAME"));
 
-      System.out.println("columns " + rscolumns.getString("COLUMN_NAME"));
-      if (rscolumns.isLast()) {
-        sbValues.append("?)");
-        sb.append(rscolumns.getString("COLUMN_NAME")).append(")");
-      } else {
-        sbValues.append("?,");
-        sb.append(rscolumns.getString("COLUMN_NAME")).append(",");
-      }
     }
 
-    return sb.append(sbValues).toString();
   }
+
+  public int getColumnCount(String tableName) {
+    int count = 0;
+    try {
+      String sqlSchemaQuery = " select * from " + tableName + "";
+
+      Statement informationSchemaStatement = ConnectionProvider.getInstance().getConnection()
+          .createStatement();
+
+      ResultSet resultCount = informationSchemaStatement.executeQuery(sqlSchemaQuery);
+      count = resultCount.getMetaData().getColumnCount();
+      System.out.println("Count is " + count);
+    } catch (SQLException e) {
+
+    }
+
+    return count;
+  }
+
 }
