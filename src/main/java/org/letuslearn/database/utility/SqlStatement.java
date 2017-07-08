@@ -2,11 +2,8 @@
 package org.letuslearn.database.utility;
 
 import org.letuslearn.database.connection.service.ConnectionProvider;
-import org.letuslearn.utility.StringUtility;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -14,7 +11,7 @@ import java.sql.SQLException;
  */
 
 public class SqlStatement {
-  int columnCount;
+  Connection connection = ConnectionProvider.getInstance().getConnection();
 
   public String getSelectStatment() {
     String s = "";
@@ -24,47 +21,17 @@ public class SqlStatement {
   }
 
   public String getInsertStatment(String tableName) {
-    Connection connection = ConnectionProvider.getInstance().getConnection();
-
+    System.out.println("In SQL Statement ");
     String s = "";
-
-    s = "INSERT INTO " + tableName + getAllColumsString(connection, tableName) + getValuesString();
-    System.out.println("Insert Statement " + s);
-    return s;
-
-  }
-
-  public String getAllColumsString(Connection connection, String tableName) {
-    ResultSet rscolumns;
-    StringUtility stringConcatination = new StringUtility();
-    StringBuffer columnsWithCommaSeperated = new StringBuffer("");
-    StringBuffer preparedColumnsString = new StringBuffer("(");
     try {
-      DatabaseMetaData metadata = connection.getMetaData();
-      rscolumns = metadata.getColumns(connection.getCatalog(), null, tableName, null);
-      TableMetadataUtility tableMetadata = new TableMetadataUtility(rscolumns);
-      columnCount = tableMetadata.getColumnCount(tableName);
-
-      columnsWithCommaSeperated = stringConcatination
-          .getCommaSepratedList(tableMetadata.getColumnsList());
-
+      TableMetadataUtility tableMetadata = new TableMetadataUtility(connection);
+      s = "INSERT INTO " + tableName + tableMetadata.getColumns(tableName);
     } catch (SQLException e) {
 
     }
-    preparedColumnsString
-        .append(stringConcatination.replaceAtLastChar(columnsWithCommaSeperated, ")"));
-    return preparedColumnsString.toString();
-  }
 
-  public String getValuesString() {
-    StringBuffer sbValues = new StringBuffer(" VALUES (");
-    while (columnCount > 0) {
-      sbValues.append("?,");
-      columnCount--;
-    }
-    sbValues.replace(sbValues.length() - 1, sbValues.length(), ")");
+    return s;
 
-    return sbValues.toString();
   }
 
 }
