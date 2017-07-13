@@ -1,9 +1,14 @@
 // Copyright (c) 2017-2018 LetUs Learn Inc.
 package org.letuslearn.database.utility;
 
-import java.sql.Connection;
+import org.letuslearn.database.connection.service.ConnectionProvider;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author aksharaaaa This class Validates the User login.
@@ -11,35 +16,36 @@ import java.sql.SQLException;
  * 
  */
 public class TableMetadataUtility {
-  private Connection connection;
+  private Logger log = Logger.getLogger("TableMetadataUtility");
 
-  public TableMetadataUtility(Connection con) {
-    connection = con;
-  }
+  public List<String> getColumnsList(ResultSet rscolumns) throws SQLException {
 
-  public String getColumns(String tableName) throws SQLException {
+    List<String> columnsList = new ArrayList<String>();
 
-    StringBuffer sb = new StringBuffer("(");
-    StringBuffer sbValues = new StringBuffer(" VALUES (");
-    System.out.println("In Conection " + connection);
-    java.sql.DatabaseMetaData metadata = connection.getMetaData();
-
-    ResultSet rscolumns = metadata.getColumns(connection.getCatalog(), null, tableName, null);
-    System.out.println(rscolumns.getRow());
     while (rscolumns.next()) {
-
-      // rscolumns.getString(i);
-
-      System.out.println("columns " + rscolumns.getString("COLUMN_NAME"));
-      if (rscolumns.isLast()) {
-        sbValues.append("?)");
-        sb.append(rscolumns.getString("COLUMN_NAME")).append(")");
-      } else {
-        sbValues.append("?,");
-        sb.append(rscolumns.getString("COLUMN_NAME")).append(",");
-      }
+      columnsList.add(rscolumns.getString("COLUMN_NAME"));
     }
 
-    return sb.append(sbValues).toString();
+    return columnsList;
   }
+
+  public int getColumnCount(String tableName) {
+    int count = 0;
+
+    String sqlSchemaQuery = " select * from " + tableName + "";
+    try {
+      Statement informationSchemaStatement = ConnectionProvider.getInstance().getConnection()
+          .createStatement();
+
+      ResultSet resultCount = informationSchemaStatement.executeQuery(sqlSchemaQuery);
+      count = resultCount.getMetaData().getColumnCount();
+      log.info("Count is " + count);
+    } catch (SQLException e) {
+      log.info("Connection is not created or Result ");
+      e.printStackTrace();
+    }
+
+    return count;
+  }
+
 }
