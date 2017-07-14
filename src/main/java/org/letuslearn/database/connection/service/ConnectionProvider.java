@@ -2,8 +2,11 @@
 package org.letuslearn.database.connection.service;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 /**
@@ -12,6 +15,8 @@ import javax.sql.DataSource;
  *
  */
 public class ConnectionProvider {
+  private Logger log = Logger.getLogger("ConnectionProvider");
+
   private ConnectionProvider() {
 
   }
@@ -42,9 +47,11 @@ public class ConnectionProvider {
 
       connection = ds.getConnection();
 
-    } catch (Exception e) {
-    }
-    // System.out.println(connection);
+    } catch (NamingException ne) {
+      log.info("Please check the JNDI Naming Environment ");
+    } catch (SQLException sql) {
+      log.info("Database Connection was not Established ");
+    } // System.out.println(connection);
 
     return connection;
 
