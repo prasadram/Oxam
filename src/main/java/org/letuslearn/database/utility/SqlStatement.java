@@ -6,7 +6,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-
 import org.letuslearn.database.connection.service.ConnectionProvider;
 import org.letuslearn.utils.StringUtility;
 
@@ -20,19 +19,19 @@ public class SqlStatement {
   private Logger log = Logger.getLogger("SqlStatement");
 
   public String getSelectStatment() {
-    String s = "";
+    String string = "";
 
-    return s;
+    return string;
 
   }
 
   public String getInsertStatment(String tableName) {
     Connection connection = ConnectionProvider.getInstance().getConnection();
 
-    String s = "";
-
-    s = "INSERT INTO " + tableName + getAllColumsString(connection, tableName) + getValuesString();
-    return s;
+    String stringInsertStatement = "";
+    stringInsertStatement = "INSERT INTO " + tableName + 
+    getAllColumsString(connection, tableName) + getValuesString();
+    return stringInsertStatement;
   }
 
   public String getAllColumsString(Connection connection, String tableName) {
@@ -51,8 +50,7 @@ public class SqlStatement {
           .getCommaSepratedList(tableMetadata.getColumnsList(rscolumns));
 
     } catch (SQLException e) {
-      log.info("Check ur Columns parameter in Database metadata ");
-
+         e.printStackTrace();
     } finally {
       log.info("In Final stage");
     }

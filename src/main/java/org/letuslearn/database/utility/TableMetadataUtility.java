@@ -48,7 +48,6 @@ public class TableMetadataUtility {
         informationSchemaStatement.close();
     }
     } catch (SQLException e) {
-        log.info("Connection is not created or Result ");
         e.printStackTrace();
     }
     return count;
