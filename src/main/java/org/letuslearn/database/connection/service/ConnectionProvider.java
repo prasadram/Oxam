@@ -14,7 +14,7 @@ import javax.sql.DataSource;
  * @author aksharaaaa This class provided the Connection
  *
  */
-public class ConnectionProvider {
+public class ConnectionProvider implements ConnectionProviderInterface {
   //private Logger log = Logger.getLogger("ConnectionProvider");
   private ConnectionProvider() {
 
@@ -27,7 +27,7 @@ public class ConnectionProvider {
     }
     return instance;
   }
-
+  @Override
   public Connection getConnection() {
     Connection connection = null;
     DataSource ds;
