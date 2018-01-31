@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Logger;
+
 import org.letuslearn.database.connection.service.ConnectionProvider;
 import org.letuslearn.utils.StringUtility;
 
@@ -16,7 +16,7 @@ import org.letuslearn.utils.StringUtility;
 public class SqlStatement {
   int columnCount;
 
-  private Logger log = Logger.getLogger("SqlStatement");
+  //private Logger log = Logger.getLogger("SqlStatement");
 
   public String getSelectStatment() {
     String string = "";
@@ -27,7 +27,6 @@ public class SqlStatement {
 
   public String getInsertStatment(String tableName) {
     Connection connection = ConnectionProvider.getInstance().getConnection();
-
     String stringInsertStatement = "";
     stringInsertStatement = "INSERT INTO " + tableName + 
     getAllColumsString(connection, tableName) + getValuesString();
@@ -51,9 +50,7 @@ public class SqlStatement {
 
     } catch (SQLException e) {
          e.printStackTrace();
-    } finally {
-      log.info("In Final stage");
-    }
+    } 
     preparedColumnsString
         .append(stringConcatination.replaceAtLastChar(columnsWithCommaSeperated, ")"));
     return preparedColumnsString.toString();
