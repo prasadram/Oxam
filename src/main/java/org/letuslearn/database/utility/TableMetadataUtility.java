@@ -16,7 +16,8 @@ import java.util.logging.Logger;
  * 
  */
 public class TableMetadataUtility {
-  private Logger log = Logger.getLogger("TableMetadataUtility");
+
+  private Logger logger = Logger.getLogger("TableMetadataUtility");
 
   public List<String> getColumnsList(ResultSet rscolumns) throws SQLException {
 
@@ -38,16 +39,17 @@ public class TableMetadataUtility {
           .createStatement();
       try {
           ResultSet resultCount = informationSchemaStatement.executeQuery(sqlSchemaQuery);
-        try {
-            count = resultCount.getMetaData().getColumnCount();
-            log.info("Count is " + count);
+            try {
+                count = resultCount.getMetaData().getColumnCount();
+                logger.info("Count is " + count);
+            } finally {
+                resultCount.close();
+            }
         } finally {
-            resultCount.close();
+            informationSchemaStatement.close();
         }
-    } finally {
-        informationSchemaStatement.close();
-    }
     } catch (SQLException e) {
+        logger.severe("In SQLException Catch ");
         e.printStackTrace();
     }
     return count;
