@@ -1,14 +1,13 @@
 // Copyright (c) 2017-2018 LetUs Learn Inc.
 package org.letuslearn.database.utility;
 
-import org.letuslearn.database.connection.service.ConnectionProvider;
-import org.letuslearn.utils.StringUtility;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Logger;
+
+import org.letuslearn.database.connection.service.ConnectionProvider;
+import org.letuslearn.utils.StringUtility;
 
 /**
  * @author aksharaaaa This Class gives the SQL Statements.
@@ -17,24 +16,21 @@ import java.util.logging.Logger;
 public class SqlStatement {
   int columnCount;
 
-  private Logger log = Logger.getLogger("SqlStatement");
+  //private Logger log = Logger.getLogger("SqlStatement");
 
   public String getSelectStatment() {
-    String s = "";
+    String string = "";
 
-    return s;
+    return string;
 
   }
 
   public String getInsertStatment(String tableName) {
     Connection connection = ConnectionProvider.getInstance().getConnection();
-
-    String s = "";
-
-    s = "INSERT INTO " + tableName + getAllColumsString(connection, tableName) + getValuesString();
-    // System.out.println("Insert Statement " + s);
-    return s;
-
+    String stringInsertStatement = "";
+    stringInsertStatement = "INSERT INTO " + tableName + 
+    getAllColumsString(connection, tableName) + getValuesString();
+    return stringInsertStatement;
   }
 
   public String getAllColumsString(Connection connection, String tableName) {
@@ -42,6 +38,7 @@ public class SqlStatement {
     StringUtility stringConcatination = new StringUtility();
     StringBuffer columnsWithCommaSeperated = new StringBuffer("");
     StringBuffer preparedColumnsString = new StringBuffer("(");
+
     try {
       DatabaseMetaData metadata = connection.getMetaData();
       rscolumns = metadata.getColumns(connection.getCatalog(), null, tableName, null);
@@ -52,9 +49,8 @@ public class SqlStatement {
           .getCommaSepratedList(tableMetadata.getColumnsList(rscolumns));
 
     } catch (SQLException e) {
-      log.info("Check ur Columns parameter in Database metadata ");
-
-    }
+         e.printStackTrace();
+    } 
     preparedColumnsString
         .append(stringConcatination.replaceAtLastChar(columnsWithCommaSeperated, ")"));
     return preparedColumnsString.toString();
