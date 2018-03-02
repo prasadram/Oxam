@@ -26,6 +26,17 @@ public class User {
     this.email = email;
     this.password = password;
   }
+  public User(int userId, String firstName, String lastName, String studentName, String userName,
+              String email, int age, String gender){
+    this.userId = userId;
+    this.studentName = studentName;
+    this.age = age;
+    this.gender = gender;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.userName = userName;
+    this.email = email;
+  }
   public String getUserName() {
     return userName;
   }
@@ -72,7 +83,8 @@ public class User {
   }
   @Override
   public String toString(){
-    return String.format("User Id: '" + this.userId + "' First Name: '" + this.firstName + "' Last Name: '"+this.lastName);
+    return String.format("User Id: '" + this.userId +
+            "' First Name: '" + this.firstName + "' Last Name: '" + this.lastName);
   }
 
 }
