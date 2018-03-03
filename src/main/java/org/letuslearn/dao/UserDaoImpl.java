@@ -3,6 +3,7 @@ package org.letuslearn.dao;
 
 import org.letuslearn.beans.data.User;
 import org.letuslearn.database.connection.service.ConnectionProvider;
+import org.letuslearn.database.utility.SqlResourceCloserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +28,10 @@ public class UserDaoImpl implements UserDao {
         Connection connection = ConnectionProvider.getInstance().getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        SqlResourceCloserUtil sqlResourceCloserUtil = null;
         Boolean isInserted = Boolean.FALSE;
         try {
+            sqlResourceCloserUtil = new SqlResourceCloserUtil();
             preparedStatement = connection.prepareStatement(insertStatement);
             preparedStatement.setInt(1, user.getUserId());
             preparedStatement.setString(2, user.getUserName());
@@ -47,34 +50,13 @@ public class UserDaoImpl implements UserDao {
             logger.error("Error is " + sqlException.getMessage());
         } finally {
             if (resultSet != null) {
-                try {
-                    resultSet.close();
-                    resultSet = null;
-                } catch (SQLException e) {
-                    logger.error("In Result Closing error " + e.getMessage());
-                    e.printStackTrace();
-                }
+                sqlResourceCloserUtil.close(resultSet);
             }
             if (preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (SQLException e) {
-                    logger.error("In Prepared Statement Closing error " + e.getMessage());
-                    e.printStackTrace();
-                }
+                sqlResourceCloserUtil.close(preparedStatement);
             }
-            try {
-                if (connection != null && !connection.isClosed()){
-                    if (!connection.getAutoCommit()) {
-                        connection.commit();
-                    }
-                    connection.close();
-                    connection = null;
-                }
-            } catch (SQLException sqlException){
-                logger.error("In Connection Closing Catch " + sqlException.getMessage());
-                sqlException.printStackTrace();
+            if (connection != null){
+                sqlResourceCloserUtil.close(connection);
             }
         }
         return isInserted;
@@ -86,8 +68,10 @@ public class UserDaoImpl implements UserDao {
         Connection connection = ConnectionProvider.getInstance().getConnection();
         PreparedStatement preparedStatementUpdate = null;
         ResultSet resultSet = null;
+        SqlResourceCloserUtil sqlResourceCloserUtil = null;
         Boolean isInserted = Boolean.FALSE;
         try {
+            sqlResourceCloserUtil = new SqlResourceCloserUtil();
             preparedStatementUpdate = connection.prepareStatement(updateStatement);
             //preparedStatement.setString(1, user.getUserName());
             //preparedStatement.setString(2, user.getPassword());
@@ -106,34 +90,13 @@ public class UserDaoImpl implements UserDao {
             logger.error("Error is " + sqlException.getMessage());
         } finally {
             if (resultSet != null) {
-                try {
-                    resultSet.close();
-                    resultSet = null;
-                } catch (SQLException e) {
-                    logger.error("In Result Closing error " + e.getMessage());
-                    e.printStackTrace();
-                }
+                sqlResourceCloserUtil.close(resultSet);
             }
             if (preparedStatementUpdate != null){
-                try {
-                    preparedStatementUpdate.close();
-                    preparedStatementUpdate = null;
-                } catch (SQLException e) {
-                    logger.error("In Prepared Statement Closing error " + e.getMessage());
-                    e.printStackTrace();
-                }
+                sqlResourceCloserUtil.close(preparedStatementUpdate);
             }
-            try {
-                if (connection != null && !connection.isClosed()){
-                    if (!connection.getAutoCommit()) {
-                        connection.commit();
-                    }
-                    connection.close();
-                    connection = null;
-                }
-            } catch (SQLException sqlException){
-                logger.error("In Connection Closing Catch " + sqlException.getMessage());
-                sqlException.printStackTrace();
+            if (connection != null){
+                sqlResourceCloserUtil.close(connection);
             }
         }
         return isInserted;
@@ -145,7 +108,9 @@ public class UserDaoImpl implements UserDao {
         Connection connection = ConnectionProvider.getInstance().getConnection();
         PreparedStatement preparedStatementDelete = null;
         ResultSet resultSet = null;
+        SqlResourceCloserUtil sqlResourceCloserUtil = null;
         try {
+            sqlResourceCloserUtil = new SqlResourceCloserUtil();
             preparedStatementDelete = connection.prepareStatement(deleteStatement);
             //preparedStatement.setString(1, user.getUserName());
             //preparedStatement.setString(2, user.getPassword());
@@ -156,34 +121,13 @@ public class UserDaoImpl implements UserDao {
             logger.error("In Delete Exception " + sqlException.getMessage());
         } finally {
             if (resultSet != null) {
-                try {
-                    resultSet.close();
-                    resultSet = null;
-                } catch (SQLException e) {
-                    logger.error("In Result Closing error " + e.getMessage());
-                    e.printStackTrace();
-                }
+                sqlResourceCloserUtil.close(resultSet);
             }
             if (preparedStatementDelete != null){
-                try {
-                    preparedStatementDelete.close();
-                    preparedStatementDelete = null;
-                } catch (SQLException e) {
-                    logger.error("In Prepared Statement Closing error " + e.getMessage());
-                    e.printStackTrace();
-                }
+                sqlResourceCloserUtil.close(preparedStatementDelete);
             }
-            try {
-                if (connection != null && !connection.isClosed()){
-                    if (!connection.getAutoCommit()) {
-                        connection.commit();
-                    }
-                    connection.close();
-                    connection = null;
-                }
-            } catch (SQLException sqlException){
-                logger.error("In Connection Closing Catch " + sqlException.getMessage());
-                sqlException.printStackTrace();
+            if (connection != null){
+                sqlResourceCloserUtil.close(connection);
             }
         }
         return 0;
